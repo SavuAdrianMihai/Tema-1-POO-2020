@@ -1,41 +1,33 @@
-package fileio;
+package classes;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Information about an user, retrieved from parsing the input test files
- * <p>
- * DO NOT MODIFY
- */
-public final class UserInputData {
+public class User {
     /**
      * User's username
      */
-    private final String username;
+    private String username;
     /**
      * Subscription Type
      */
-    private final String subscriptionType;
+    private String subscriptionType;
     /**
      * The history of the movies seen
      */
-    private final Map<String, Integer> history;
+    private Map<String, Integer> history;
     /**
      * Movies added to favorites
      */
-    private final ArrayList<String> favoriteMovies;
+    private ArrayList<String> favoriteMovies;
 
-    private final ArrayList<Double> ratings;
-
-    public UserInputData(final String username, final String subscriptionType,
-                         final Map<String, Integer> history,
-                         final ArrayList<String> favoriteMovies) {
+    public User(String username, String subscriptionType,
+                Map<String, Integer> history,
+                ArrayList<String> favoriteMovies) {
         this.username = username;
         this.subscriptionType = subscriptionType;
         this.favoriteMovies = favoriteMovies;
         this.history = history;
-        this.ratings = new ArrayList<Double> ();
     }
 
     public String getUsername() {
@@ -52,10 +44,6 @@ public final class UserInputData {
 
     public ArrayList<String> getFavoriteMovies() {
         return favoriteMovies;
-    }
-
-    public ArrayList<Double> getRatings() {
-        return ratings;
     }
 
     @Override

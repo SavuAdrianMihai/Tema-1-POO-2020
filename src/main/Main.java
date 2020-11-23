@@ -2,9 +2,9 @@ package main;
 
 import checker.Checkstyle;
 import checker.Checker;
-import com.sun.net.httpserver.Authenticator;
+import classes.Command;
+import classes.Recommendation;
 import common.Constants;
-import fileio.ActionInputData;
 import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
@@ -73,10 +73,9 @@ public final class Main {
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult = new JSONArray();
 
-        //fileWriter.writeFile(1, "Success", "aaa");
         //TODO add here the entry point to your implementation
 
-        int res = 1;
+
         for (int i = 0; i < input.getCommands().size(); i++) {
             String actionType = input.getCommands().get(i).getActionType();
             switch (actionType) {
@@ -84,60 +83,152 @@ public final class Main {
                     String type = input.getCommands().get(i).getType();
                     switch (type) {
                         case "view":
-                            String messageView = "success";
-                            String theShow = input.getCommands().get(i).getTitle();
-                            JSONObject fS = fileWriter.writeFile(input.getCommands().get(0).getActionId(),
-                                    "message", messageView + " -> " + theShow
-                                            + " was viewed with total views of " + res);
+                            Command command = new Command();
+                            String username = input.getCommands().get(i).getUsername();
+                            String title = input.getCommands().get(i).getTitle();
+                            int nrOfViews = 0;
+                            String messageView = "fail";
+                            for (int j = 0; j < input.getUsers().size(); j++) {
+                                if (username.equals(input.getUsers().get(j).getUsername())) {
+                                    command.view(input.getUsers().get(j), title);
+                                    if (input.getUsers().get(j).getHistory().
+                                            containsKey(title)) {
+                                        messageView = "success";
+                                        nrOfViews = input.getUsers().get(j).getHistory().get(title);
+                                    }
+                                }
+                            }
+                            JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                    "message", messageView + " -> " + title
+                                            + " was viewed with total views of " + nrOfViews);
                             arrayResult.add(fS);
-                            res++;
                             break;
 
                         case "favorite":
                             String outcomeAction = new String();
                             messageView = new String();
-                            String username = input.getCommands().get(i).getUsername();
+                            command = new Command();
+                            username = input.getCommands().get(i).getUsername();
+                            title = input.getCommands().get(i).getTitle();
                             for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
+                                    if (input.getUsers().get(j).getFavoriteMovies().
+                                            contains(title)) {
+                                        messageView = "error";
+                                        outcomeAction = " is already in favourite list";
+                                        break;
+                                    }
                                     if (input.getUsers().get(j).getHistory().
-                                            containsKey(input.getCommands().get(j).getTitle())) {
-                                        messageView = "success";
-                                        outcomeAction = " was added as favourite";
+                                            containsKey(title)) {
+                                        command.favorite(input.getUsers().get(j), title);
+                                        if (input.getUsers().get(j).getFavoriteMovies().
+                                                contains(title)) {
+                                            messageView = "success";
+                                            outcomeAction = " was added as favourite";
+                                        }
                                     } else {
                                         messageView = "error";
                                         outcomeAction = " is not seen";
                                     }
-                                    if (input.getUsers().get(j).getFavoriteMovies().
-                                            contains(input.getCommands().get(j).getTitle())) {
-                                        messageView = "error";
-                                        outcomeAction = " is already in favourite list";
-                                    }
                                 }
                             }
-                            theShow = input.getCommands().get(i).getTitle();
-                            fS = fileWriter.writeFile(input.getCommands().get(0).getActionId(),
+                            title = input.getCommands().get(i).getTitle();
+                            fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
                                     "message", messageView + " -> "
-                                            + theShow + outcomeAction);
+                                            + title + outcomeAction);
                             arrayResult.add(fS);
-                            res++;
                             break;
                         case "rating":
-                            messageView = "success";
-                            theShow = input.getCommands().get(i).getTitle();
+                            int viewed = 1;
+                            messageView = "error";
+                            title = input.getCommands().get(i).getTitle();
                             double rating = input.getCommands().get(i).getGrade();
                             username = input.getCommands().get(i).getUsername();
-                            fS = fileWriter.writeFile(input.getCommands().get(0).getActionId(),
-                                    "message", messageView + " -> " + theShow
-                                            + " was rated with " + rating + " by " + username);
+                            int seasonNumber = input.getCommands().get(i).getSeasonNumber();
+                            command = new Command();
+                            for (int j = 0; j < input.getUsers().size(); j++) {
+                                if (username.equals(input.getUsers().get(j).getUsername())) {
+                                    if (input.getUsers().get(j).getHistory().containsKey(title)){
+                                        if (seasonNumber == 0) {
+                                            for (int k = 0; k < input.getMovies().size(); k++) {
+                                                if (title.equals(input.getMovies().get(k).getTitle()))
+                                                    command.ratingMovie(input.getUsers().get(j),
+                                                            input.getMovies().get(k), title, rating);
+                                                if (input.getMovies().get(k).getRatings().contains(rating))
+                                                    messageView = "success";
+                                            }
+                                        } else {
+                                            for (int k = 0; k < input.getSerials().size(); k++) {
+                                                if (title.equals(input.getSerials().get(k).getTitle())) {
+                                                    command.ratingSerial(input.getUsers().get(j),
+                                                            input.getSerials().get(k),
+                                                            title, rating, seasonNumber);
+                                                    if (input.getSerials().get(k).getSeasons().
+                                                            get(seasonNumber - 1).getRatings().contains(rating)) {
+                                                        messageView = "success";
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else viewed = 0;
+                                }
+                            }
+                            if (viewed == 1) {
+                                fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                        "message", messageView + " -> " + title
+                                                + " was rated with " + rating + " by " + username);
+                                arrayResult.add(fS);
+                                break;
+                            }
+
+                            fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                    "message", messageView + " -> " + title
+                                            + " is not seen");
                             arrayResult.add(fS);
-
-                            res++;
                             break;
-
 
                         default:
                             fS = fileWriter.writeFile(0, "message", "fail");
                             arrayResult.add(fS);
+                    }
+                case "recommendation":
+                    type = input.getCommands().get(i).getType();
+                    switch(type){
+                        case "standard":
+                            Recommendation recommendation = new Recommendation();
+                            String username = input.getCommands().get(i).getUsername();
+                            String showName = "";
+                            for (int j = 0; j < input.getUsers().size(); j++) {
+                                if (username.equals(input.getUsers().get(j).getUsername())) {
+                                    showName = recommendation.standardRecommendation
+                                            (input, input.getUsers().get(j));
+                                }
+                            }
+                            JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                    "message", "StandardRecommendation result: " + showName);
+                            arrayResult.add(fS);
+                            break;
+                       /*
+                       default:
+                            fS = fileWriter.writeFile(0, "message", "fail");
+                            arrayResult.add(fS);
+                        */
+                        case "best_unseen":
+                            recommendation = new Recommendation();
+                            username = input.getCommands().get(i).getUsername();
+                            showName = "";
+                            for (int j = 0; j < input.getUsers().size(); j++) {
+                                if (username.equals(input.getUsers().get(j).getUsername())) {
+                                    showName = recommendation.bestUnseenRecommendation
+                                            (input, input.getUsers().get(j));
+                                }
+                            }
+                            fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                    "message", "BestRatedUnseenRecommendation result: " + showName);
+                            arrayResult.add(fS);
+                            break;
                     }
             }
         }

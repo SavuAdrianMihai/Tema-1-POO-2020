@@ -25,7 +25,7 @@ public final class Season {
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
-        this.ratings = new ArrayList<>();
+        this.ratings = new ArrayList<Double>();
     }
 
     public int getDuration() {
