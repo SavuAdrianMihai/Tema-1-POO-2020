@@ -19,6 +19,12 @@ public final class SerialInputData extends ShowInput {
      */
     private final ArrayList<Season> seasons;
 
+    public SerialInputData() {
+        super(null, 0, null, null);
+        this.numberOfSeasons = 0;
+        this.seasons = new ArrayList<>();
+    }
+
     public SerialInputData(final String title, final ArrayList<String> cast,
                            final ArrayList<String> genres,
                            final int numberOfSeasons, final ArrayList<Season> seasons,
@@ -49,18 +55,20 @@ public final class SerialInputData extends ShowInput {
 
     public double averageSerialRating(){
         double sum = 0;
-        if (this.seasons.size() != 0) {
-            for (int i = 0; i < this.seasons.size(); i++) {
+        if (this.numberOfSeasons != 0) {
+            for (int i = 0; i < this.numberOfSeasons; i++) {
+                double sumSeason = 0;
                 if (this.seasons.get(i).getRatings().size() != 0) {
                     for (int j = 0; j < this.seasons.get(i).getRatings().size(); j++)
-                        sum = this.seasons.get(i).getRatings().get(j);
-                    sum /= this.seasons.get(i).getRatings().size();
+                        sumSeason += this.seasons.get(i).getRatings().get(j);
+                    sumSeason /= this.seasons.size();
                 }
+                sum += sumSeason;
             }
-                sum /= this.seasons.size();
+                sum /= this.numberOfSeasons;
             return sum;
         }
-        return sum;
+        return 0;
     }
 
     public int totalDuration(){

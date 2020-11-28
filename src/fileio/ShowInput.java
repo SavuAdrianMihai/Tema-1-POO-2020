@@ -1,6 +1,8 @@
 package fileio;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * General information about show (video), retrieved from parsing the input test files
@@ -25,12 +27,18 @@ public abstract class ShowInput {
      */
     private final ArrayList<String> genres;
 
+    private int views;
+
+    private int numberOfFavorites;
+
     public ShowInput(final String title, final int year,
                      final ArrayList<String> cast, final ArrayList<String> genres) {
         this.title = title;
         this.year = year;
         this.cast = cast;
         this.genres = genres;
+        this.views = 0;
+        this.numberOfFavorites = 0;
     }
 
     public final String getTitle() {
@@ -47,5 +55,25 @@ public abstract class ShowInput {
 
     public final ArrayList<String> getGenres() {
         return genres;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public int getNumberOfFavorites() {
+        return numberOfFavorites;
+    }
+
+    public void setNumberOfFavorites(int numberOfFavorites) {
+        this.numberOfFavorites = numberOfFavorites;
+    }
+
+    public double calculateRating() {
+        return 0;
     }
 }

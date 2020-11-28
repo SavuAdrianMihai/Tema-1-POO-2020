@@ -26,7 +26,9 @@ public final class ActorInputData {
     /**
      * awards won by the actor
      */
-    private Map<ActorsAwards, Integer> awards;
+    private final Map<ActorsAwards, Integer> awards;
+
+    private double rating;
 
     public ActorInputData(final String name, final String careerDescription,
                           final ArrayList<String> filmography,
@@ -35,6 +37,7 @@ public final class ActorInputData {
         this.careerDescription = careerDescription;
         this.filmography = filmography;
         this.awards = awards;
+        this.rating = 0;
     }
 
     public String getName() {
@@ -65,6 +68,14 @@ public final class ActorInputData {
         this.careerDescription = careerDescription;
     }
 
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
     @Override
     public String toString() {
         return "ActorInputData{"
@@ -72,5 +83,11 @@ public final class ActorInputData {
                 + ", careerDescription='"
                 + careerDescription + '\''
                 + ", filmography=" + filmography + '}';
+    }
+
+    public int totalNumberOfAwards(){
+        int awardsCounter;
+        awardsCounter = this.getAwards().values().stream().mapToInt(Integer::intValue).sum();
+        return awardsCounter;
     }
 }

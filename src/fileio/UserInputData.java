@@ -1,7 +1,6 @@
 package fileio;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Information about an user, retrieved from parsing the input test files
@@ -28,6 +27,8 @@ public final class UserInputData {
 
     private final ArrayList<Double> ratings;
 
+    private final LinkedHashMap<String, Integer> ratingData;
+
     public UserInputData(final String username, final String subscriptionType,
                          final Map<String, Integer> history,
                          final ArrayList<String> favoriteMovies) {
@@ -35,7 +36,8 @@ public final class UserInputData {
         this.subscriptionType = subscriptionType;
         this.favoriteMovies = favoriteMovies;
         this.history = history;
-        this.ratings = new ArrayList<Double> ();
+        this.ratings = new ArrayList<>();
+        this.ratingData = new LinkedHashMap<>();
     }
 
     public String getUsername() {
@@ -56,6 +58,10 @@ public final class UserInputData {
 
     public ArrayList<Double> getRatings() {
         return ratings;
+    }
+
+    public Map<String, Integer> getRatingData() {
+        return ratingData;
     }
 
     @Override
