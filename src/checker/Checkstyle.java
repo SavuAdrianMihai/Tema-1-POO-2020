@@ -36,7 +36,8 @@ public final class Checkstyle {
             }
             System.out.println("-----------------------------");
             System.out.println("Checkstyle: "
-                    + ((errors <= Constants.MIN_CHECKSTYLE_ERR) ? "Ok" : "Failed"));
+                    + ((errors <= Constants.MIN_CHECKSTYLE_ERR) ? "Ok"
+                    : "Failed"));
             System.out.println("Checkstyle errors: " + errors);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

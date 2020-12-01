@@ -1,38 +1,48 @@
-Object Oriented Programming Course
-Homework - VideosDB
+Tema 1 POO Savu Adrian-Mihai CD321
 
-November 2020
+Cele trei tipuri de actiuni au fost impartite in 3 pachete: commands, 
+queries si recommendations
 
-# Info
-https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/tema
+Pachetul commands:
+contine clasa commands unde sunt implementate cele 3 tipuri de comenzi,
+acestea se folosesc de inputul primit pentru a face cautarea (pentru a valida
+comanda) si adaugarea titlurilor in bazele de date asociate fiecareia. Pentru 
+comanda rating am folosit o singura metoda compatibila pentru seriale si 
+filme, constructorul pentru filme initializeaza campul season cu 0.
+Pentru a verifica daca ratingul a mai fost dat de user am adaugat un camp
+linkedHashMap in clasa de input a userilor, aceasta stocheaza numele
+videoului si sezonu (0 pentru filme, numar sezon pentru serial)
 
-# About the code
+Pachetul queries:
+contine interfetele pentru fiecare tip de obiect si implementarea obiectelor
+de tip video in clasa ShowQuery si a celor de tip actor si user in OtherQuery.
+Majoritatea metodelor de tip ShowQuery au structura urmatoare: filtrarea
+videourilor, extragerea lor in functie de tipul de query, sortarea si
+afisarea primelor N videouri. Query-ul de tip user urmareste aceasi structura.
+Query Actor: filterDescription: filtrarea actorilor, am abordat cazul case
+insensitive al cuvantului, crearea listei cu numele actorilor si sortarea
+alfabetica in functie de paramtru primit in antetul functiei. actorAwards
+are o structura asemanatoare. Dupa filtrare, presupunem ca toti actorii
+au toate premiile si in care un award nu este gasit, actorul nu mai este
+eligibil pentru a fi adaugat in lista. La averageActors m-am folosit de
+2 metode care calculeaza media aritmetica a unui serial/film implementate
+in clasele de input ale acestor 2 obiecte. Dupa insumarea tuturor ratingurilor
+videourilor in care a jucat fiecare actor se va face media aritmetica cu 
+ajutorul unui counter. Verificarile se fac pe parcurs, actorii care au
+rating 0 sunt exclusi. Urmatoarele operatii sunt sortarea si crearea listei.
 
-We provide the input tests, the logic that parses them and the checker that runs them.
+Pachetul recommendation:
+contine interfetele pentru recomandarile destinate userilor basic si premium
+clasa recommendation contine implementarea tuturor metodelor de tip
+recommendation. Structura metodei recomandarii de tip bestunseen: este cautat
+filmul cu cel mai bun rating dupa serialul cu cel mai bun rating si este
+intors rezultatul in functie de: ce video a avut ratingul mai mare, filmul
+daca nu a fost gasit niciun serial, invers daca nu a fost gasit niciun
+film sau mesajul de fail daca nu a fost gasit niciun video. Pentru
+recomandarile premimum mai intai se face verificarea tipului de abonament al
+utilizatorului, se updateaza baza de date a videourilor cu datele de la 
+utilizatori (views, favorite), date oferite inainte de apelarea comenzilor.
+Urmatoarele operatii sunt sortarea si construirea listei care va fi returnata
+pentru fiecare tip de recomandare.
 
-* test_db - contains the tests in JSON format
-* src
-   * checker - the checker's sources including the checkstyle necessary files, not to be modified
-   * fileio - classes for parsing the input files, not to be modified
-   * common, utils
-        * contain utility classes with constants and static methods
-        * you can add your own functionality in the existing classes or add new classes as well
-   * actor
-        * contains an enum for the types of awards an actor can have - do not modify it
-        * you can add here your actor related classes
-   * entertainment
-        * contains an enum for the supported video genres - do not modify it
-        * class for representing a Season of a tv show - do not modify it
-        * you can add here your entertainment related classes
-
-We encourage you to organize your implementation in packages based on the functionality their classes offer. Try to keep
-your code modular, readable and documented.
-
-# Testing
-
-The Main class runs the checker on your implementation. Add the entry point to your implementation in it.
-
-Run Main to test your implementation from the IDE or from command line.
-
-Run the main method from Test class with the name of the input file from the command line and the result will be written
-to the out.txt file. Thus, you can compare this result with ref.
+Link github: https://github.com/SavuAdrianMihai/Tema-1-POO-2020

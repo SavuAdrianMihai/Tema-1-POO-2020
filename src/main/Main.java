@@ -1,10 +1,11 @@
 package main;
 
-import checker.Checkstyle;
 import checker.Checker;
-import classes.Command;
-import classes.Query;
-import classes.Recommendation;
+import checker.Checkstyle;
+import commands.Command;
+import queries.OtherQuery;
+import queries.ShowQuery;
+import recommendations.Recommendation;
 import common.Constants;
 import fileio.Input;
 import fileio.InputLoader;
@@ -22,8 +23,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * The entry point to this homework. It runs the checker that tests your implentation.
+ * The entry point to this homework. It runs the checker that tests your
+ * implentation.
  */
+@SuppressWarnings("unchecked")
 public final class Main {
     /**
      * for coding style
@@ -33,6 +36,7 @@ public final class Main {
 
     /**
      * Call the main checker and the coding style checker
+     *
      * @param args from command line
      * @throws IOException in case of exceptions to reading / writing
      */
@@ -58,7 +62,8 @@ public final class Main {
             }
         }
 
-        checker.iterateFiles(Constants.RESULT_PATH, Constants.REF_PATH, Constants.TESTS_PATH);
+        checker.iterateFiles(Constants.RESULT_PATH, Constants.REF_PATH,
+                Constants.TESTS_PATH);
         Checkstyle test = new Checkstyle();
         test.testCheckstyle();
     }
@@ -76,9 +81,6 @@ public final class Main {
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult = new JSONArray();
 
-        //TODO add here the entry point to your implementation
-
-
         for (int i = 0; i < input.getCommands().size(); i++) {
             String actionType = input.getCommands().get(i).getActionType();
             switch (actionType) {
@@ -93,17 +95,22 @@ public final class Main {
                             String messageView = "fail";
                             for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    command.view(input.getUsers().get(j), title, input);
+                                    command.view(input.getUsers().get(j),
+                                            title, input);
                                     if (input.getUsers().get(j).getHistory().
                                             containsKey(title)) {
                                         messageView = "success";
-                                        nrOfViews = input.getUsers().get(j).getHistory().get(title);
+                                        nrOfViews =
+                                                input.getUsers().get(j).getHistory().get(title);
                                     }
                                 }
                             }
-                            JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                    "message", messageView + " -> " + title
-                                            + " was viewed with total views of " + nrOfViews);
+                            JSONObject fS =
+                                    fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                            "message",
+                                            messageView + " -> " + title
+                                                    + " was viewed with total" + " views "
+                                                    + "of " + nrOfViews);
                             arrayResult.add(fS);
                             break;
 
@@ -117,12 +124,16 @@ public final class Main {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
                                     outcomeFavorite = command.favorite(input.
                                             getUsers().get(j), title, input);
-                                    if (outcomeFavorite.equals(" is already in favourite list"))
+                                    if (outcomeFavorite.equals(" is already "
+                                            + "in favourite list")) {
                                         messageView = "error";
-                                    if (outcomeFavorite.equals(" was added as favourite"))
-                                            messageView = "success";
-                                    if (outcomeFavorite.equals(" is not seen"))
+                                    }
+                                    if (outcomeFavorite.equals(" was added as" + " favourite")) {
+                                        messageView = "success";
+                                    }
+                                    if (outcomeFavorite.equals(" is not seen")) {
                                         messageView = "error";
+                                    }
                                 }
                             }
                             fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
@@ -140,8 +151,9 @@ public final class Main {
                             command = new Command();
                             for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    outputMessage = command.rating(input.getUsers().get(j), title,
-                                            input, rating, seasonNumber);
+                                    outputMessage =
+                                            command.rating(input.getUsers().get(j), title,
+                                                    input, rating, seasonNumber);
                                 }
                             }
                             if (outputMessage.equals("success")) {
@@ -169,33 +181,40 @@ public final class Main {
                                 break;
                             }
 
-                        default:
-                        //    fS = fileWriter.writeFile(0, "message", "fail");
-                         //   arrayResult.add(fS);
-                        break;
+                        default: break;
                     }
                     break;
                 case "recommendation":
                     type = input.getCommands().get(i).getType();
-                    switch(type){
+                    switch (type) {
                         case "standard":
-                            Recommendation recommendation = new Recommendation();
-                            String username = input.getCommands().get(i).getUsername();
+                            Recommendation recommendation =
+                                    new Recommendation();
+                            String username =
+                                    input.getCommands().get(i).getUsername();
                             String showName = "";
                             for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    showName = recommendation.standardRecommendation
-                                            (input, input.getUsers().get(j));
+                                    showName =
+                                            recommendation.
+                                                    standardRecommendation(input,
+                                                            input.getUsers().get(j));
                                 }
                             }
-                            if (showName.equals("")){
-                                JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                        "message","StandardRecommendation cannot be applied!");
+                            if (showName.equals("")) {
+                                JSONObject fS =
+                                        fileWriter.writeFile(input.getCommands().get(i).
+                                                        getActionId(), "message",
+                                                "StandardRecommendation "
+                                                        + "cannot be applied!");
                                 arrayResult.add(fS);
                                 break;
                             }
-                            JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                    "message", "StandardRecommendation result: " + showName);
+                            JSONObject fS =
+                                    fileWriter.writeFile(input.getCommands().get(i).getActionId(),
+                                            "message",
+                                            "StandardRecommendation "
+                                                    + "result: " + showName);
                             arrayResult.add(fS);
                             break;
 
@@ -203,22 +222,26 @@ public final class Main {
                             recommendation = new Recommendation();
                             username = input.getCommands().get(i).getUsername();
                             showName = "";
-                            for (int j = 0; j < input.getUsers().size(); j++)
+                            for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    showName = recommendation.bestUnseenRecommendation
-                                            (input, input.getUsers().get(j));
+                                    showName = recommendation.bestUnseenRecommendation(input,
+                                            input.getUsers().get(j));
                                     break;
                                 }
+                            }
 
-                            if (showName.equals("fail")){
+                            if (showName.equals("fail")) {
                                 fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                        "message","BestRatedUnseenRecommendation cannot be applied!");
+                                        "message",
+                                        "BestRatedUnseenRecommendation cannot"
+                                                + " be applied!");
                                 arrayResult.add(fS);
                                 break;
                             }
 
                             fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                    "message", "BestRatedUnseenRecommendation result: " + showName);
+                                    "message", "BestRatedUnseenRecommendation"
+                                            + " result: " + showName);
                             arrayResult.add(fS);
                             break;
 
@@ -226,21 +249,24 @@ public final class Main {
                             recommendation = new Recommendation();
                             username = input.getCommands().get(i).getUsername();
                             showName = "";
-                            for (int j = 0; j < input.getUsers().size(); j++)
+                            for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    showName = recommendation.popular
-                                            (input.getUsers().get(j), input);
+                                    showName = recommendation.popular(input.getUsers().
+                                            get(j), input);
                                     break;
                                 }
-                            if (showName.equals("")){
+                            }
+                            if (showName.equals("")) {
                                 fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                        "message","PopularRecommendation cannot be applied!");
+                                        "message", "PopularRecommendation "
+                                                + "cannot be applied!");
                                 arrayResult.add(fS);
                                 break;
                             }
 
                             fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                    "message", "PopularRecommendation result: " + showName);
+                                    "message", "PopularRecommendation result:"
+                                            + " " + showName);
                             arrayResult.add(fS);
                             break;
 
@@ -248,190 +274,235 @@ public final class Main {
                             recommendation = new Recommendation();
                             username = input.getCommands().get(i).getUsername();
                             showName = "";
-                            for (int j = 0; j < input.getUsers().size(); j++)
+                            for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    showName = recommendation.favorite
-                                            (input.getUsers().get(j), input);
+                                    showName = recommendation.favorite(input.getUsers().get(j),
+                                            input);
                                     break;
                                 }
-                            if (showName.equals("")){
+                            }
+                            if (showName.equals("")) {
                                 fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                        "message","FavoriteRecommendation cannot be applied!");
+                                        "message", "FavoriteRecommendation "
+                                                + "cannot be applied!");
                                 arrayResult.add(fS);
                                 break;
                             }
 
                             fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                    "message", "FavoriteRecommendation result: " + showName);
+                                    "message", "FavoriteRecommendation "
+                                            + "result: " + showName);
                             arrayResult.add(fS);
                             break;
 
                         case "search":
                             recommendation = new Recommendation();
                             username = input.getCommands().get(i).getUsername();
-                            String genre = input.getCommands().get(i).getGenre();
+                            String genre =
+                                    input.getCommands().get(i).getGenre();
                             ArrayList<String> showNames = new ArrayList<>();
-                            for (int j = 0; j < input.getUsers().size(); j++)
+                            for (int j = 0; j < input.getUsers().size(); j++) {
                                 if (username.equals(input.getUsers().get(j).getUsername())) {
-                                    showNames = recommendation.search
-                                            (input.getUsers().get(j), input, genre);
+                                    showNames = recommendation.search(input.getUsers().get(j),
+                                            input, genre);
                                     break;
                                 }
-                            if (showNames.get(0).equals("fail")){
+                            }
+                            if (showNames.get(0).equals("fail")) {
                                 fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                        "message","SearchRecommendation cannot be applied!");
+                                        "message", "SearchRecommendation "
+                                                + "cannot be applied!");
                                 arrayResult.add(fS);
                                 break;
                             }
 
                             fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                    "message", "SearchRecommendation result: " + showNames);
+                                    "message", "SearchRecommendation result: "
+                                            + showNames);
                             arrayResult.add(fS);
                             break;
+                        default: break;
                     }
                     break;
                 case "query":
                     String objectType = "";
-                    if (input.getCommands().get(i).getObjectType() != null)
+                    if (input.getCommands().get(i).getObjectType() != null) {
                         objectType = input.getCommands().get(i).getObjectType();
+                    }
                     switch (objectType) {
                         case "movies":
-                            String criteria = input.getCommands().get(i).getCriteria();
-                            switch (criteria){
+                            String criteria =
+                                    input.getCommands().get(i).getCriteria();
+                            switch (criteria) {
                                 case "longest":
-                                    Query query = new Query();
+                                    ShowQuery query = new ShowQuery();
                                     String sortType = input.getCommands().get(i).getSortType();
-                                    List<List<String>> filters = input.getCommands().get(i).getFilters();
-                                    int numberOfMovies;
-                                    ArrayList<String> movieName = query.longestMovie(input, sortType, filters);
-                                    JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + movieName);
+                                    List<List<String>> filters =
+                                            input.getCommands().get(i).getFilters();
+                                    int numberOfMovies =
+                                            input.getCommands().get(i).getNumber();
+                                    ArrayList<String> movieName =
+                                            query.longestMovie(input,
+                                                    sortType, filters, numberOfMovies);
+                                    JSONObject fS =
+                                            fileWriter.writeFile(input.getCommands().get(i).
+                                                            getActionId(), "message",
+                                                    "Query result: " + movieName);
                                     arrayResult.add(fS);
                                     break;
                                 case "most_viewed":
-                                    query = new Query();
+                                    query = new ShowQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     numberOfMovies = input.getCommands().get(i).getNumber();
-                                    movieName = query.mostViewedMovie(input, sortType, filters, numberOfMovies);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + movieName);
+                                    movieName = query.mostViewedMovie(input,
+                                            sortType, filters, numberOfMovies);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + movieName);
                                     arrayResult.add(fS);
                                     break;
                                 case "favorite":
-                                    query = new Query();
+                                    query = new ShowQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     numberOfMovies = input.getCommands().get(i).getNumber();
-                                    movieName = query.favoriteMovie(input, sortType, filters, numberOfMovies);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + movieName);
+                                    movieName = query.favoriteMovie(input,
+                                            sortType, filters, numberOfMovies);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + movieName);
                                     arrayResult.add(fS);
                                     break;
                                 case "ratings":
-                                    query = new Query();
+                                    query = new ShowQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     numberOfMovies = input.getCommands().get(i).getNumber();
-                                    movieName = query.ratingMovie(input, sortType, filters, numberOfMovies);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + movieName);
+                                    movieName = query.ratingMovie(input,
+                                            sortType, filters, numberOfMovies);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + movieName);
                                     arrayResult.add(fS);
                                     break;
+                                default: break;
                             }
                             break;
                         case "shows":
                             criteria = input.getCommands().get(i).getCriteria();
-                            switch (criteria){
+                            switch (criteria) {
                                 case "longest":
-                                    Query query = new Query();
+                                    ShowQuery query = new ShowQuery();
                                     String sortType = input.getCommands().get(i).getSortType();
-                                    List<List<String>> filters = input.getCommands().get(i).getFilters();
+                                    List<List<String>> filters =
+                                            input.getCommands().get(i).getFilters();
                                     int numberOfSerials = input.getCommands().get(i).getNumber();
-                                    ArrayList<String> serialName = query.longestSerial(input, sortType, filters);
-                                    JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + serialName);
+                                    ArrayList<String> serialName = query.longestSerial(input,
+                                                    sortType, filters, numberOfSerials);
+                                    JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                            getActionId(), "message",
+                                                    "Query result: " + serialName);
                                     arrayResult.add(fS);
                                     break;
                                 case "most_viewed":
-                                    query = new Query();
+                                    query = new ShowQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     numberOfSerials = input.getCommands().get(i).getNumber();
-                                    serialName = query.mostViewedSerial(input, sortType, filters, numberOfSerials);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + serialName);
+                                    serialName = query.mostViewedSerial(input,
+                                            sortType, filters, numberOfSerials);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + serialName);
                                     arrayResult.add(fS);
                                     break;
                                 case "favorite":
-                                    query = new Query();
+                                    query = new ShowQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     numberOfSerials = input.getCommands().get(i).getNumber();
-                                    serialName = query.favoriteSerial(input, sortType, filters, numberOfSerials);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + serialName);
+                                    serialName = query.favoriteSerial(input,
+                                            sortType, filters, numberOfSerials);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + serialName);
                                     arrayResult.add(fS);
                                     break;
                                 case "ratings":
-                                    query = new Query();
+                                    query = new ShowQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     numberOfSerials = input.getCommands().get(i).getNumber();
-                                    serialName = query.ratingSerial(input, sortType, filters, numberOfSerials);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + serialName);
+                                    serialName = query.ratingSerial(input,
+                                            sortType, filters, numberOfSerials);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + serialName);
                                     arrayResult.add(fS);
                                     break;
+                                default: break;
                             }
                         case "actors":
                             criteria = input.getCommands().get(i).getCriteria();
-                            switch (criteria){
+                            switch (criteria) {
                                 case "filter_description":
-                                    Query query = new Query();
+                                    OtherQuery query = new OtherQuery();
                                     String sortType = input.getCommands().get(i).getSortType();
-                                    List<List<String>> filters = input.getCommands().get(i).getFilters();
-                                    ArrayList<String> actorsName = new ArrayList<>();
-                                    actorsName = query.filterDescription(input, sortType, filters);
-                                    JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + actorsName);
+                                    List<List<String>> filters =
+                                            input.getCommands().get(i).getFilters();
+                                    ArrayList<String> actorsName;
+                                    actorsName = query.
+                                            filterDescriptionActors(input, sortType, filters);
+                                    JSONObject fS =
+                                            fileWriter.writeFile(input.
+                                                            getCommands().get(i).getActionId(),
+                                                    "message",
+                                                    "Query result: " + actorsName);
                                     arrayResult.add(fS);
                                     break;
                                 case "awards":
-                                    query = new Query();
+                                    query = new OtherQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
-                                    actorsName = new ArrayList<>();
-                                    actorsName = query.awards(input, sortType, filters);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + actorsName);
+                                    actorsName = query.awardsActors(input, sortType, filters);
+                                    fS = fileWriter.writeFile(input.getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + actorsName);
                                     arrayResult.add(fS);
                                     break;
                                 case "average":
-                                    query = new Query();
+                                    query = new OtherQuery();
                                     sortType = input.getCommands().get(i).getSortType();
                                     filters = input.getCommands().get(i).getFilters();
                                     int numberOfActors = input.getCommands().get(i).getNumber();
-                                    actorsName = new ArrayList<>();
-                                    actorsName = query.average(input, sortType, filters, numberOfActors);
-                                    fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                            "message","Query result: " + actorsName);
+                                    actorsName = query.averageActors(input,
+                                            sortType, filters, numberOfActors);
+                                    fS = fileWriter.writeFile(input.
+                                                    getCommands().get(i).
+                                                    getActionId(), "message",
+                                            "Query result: " + actorsName);
                                     arrayResult.add(fS);
-                                    break;
+                                default: break;
                             }
                         case "users":
                             criteria = input.getCommands().get(i).getCriteria();
                             if ("num_ratings".equals(criteria)) {
-                                Query query = new Query();
+                                OtherQuery query = new OtherQuery();
                                 String sortType = input.getCommands().get(i).getSortType();
                                 int numberOfUsers = input.getCommands().get(i).getNumber();
-                                ArrayList<String> usersName = new ArrayList<>();
-                                usersName = query.numberOfRatings(input, numberOfUsers, sortType);
-                                JSONObject fS = fileWriter.writeFile(input.getCommands().get(i).getActionId(),
-                                        "message", "Query result: " + usersName);
+                                ArrayList<String> usersName;
+                                usersName = query.
+                                        numberOfRatingsUsers(input, numberOfUsers, sortType);
+                                JSONObject fS =
+                                        fileWriter.writeFile(input.getCommands().
+                                                        get(i).getActionId(), "message",
+                                                "Query result: " + usersName);
                                 arrayResult.add(fS);
                             }
+                        default: break;
                     }
+                default: break;
             }
         }
         fileWriter.closeJSON(arrayResult);

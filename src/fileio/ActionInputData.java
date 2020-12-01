@@ -64,7 +64,8 @@ public final class ActionInputData {
     private final List<List<String>> filters = new ArrayList<>();
 
     protected ActionInputData(final int actionId, final String actionType,
-                              final String type, final String username, final String genre) {
+                              final String type, final String username,
+                              final String genre) {
         this.actionId = actionId;
         this.actionType = actionType;
         this.type = type;
@@ -79,9 +80,12 @@ public final class ActionInputData {
         this.seasonNumber = 0;
     }
 
-    public ActionInputData(final int actionId, final String actionType, final String objectType,
-                           final String genre, final String sortType, final String criteria,
-                           final String year, final int number, final List<String> words,
+    public ActionInputData(final int actionId, final String actionType,
+                           final String objectType,
+                           final String genre, final String sortType,
+                           final String criteria,
+                           final String year, final int number,
+                           final List<String> words,
                            final List<String> awards) {
         this.actionId = actionId;
         this.actionType = actionType;
@@ -101,8 +105,10 @@ public final class ActionInputData {
         this.seasonNumber = 0;
     }
 
-    public ActionInputData(final int actionId, final String actionType, final String type,
-                           final String username, final String title, final Double grade,
+    public ActionInputData(final int actionId, final String actionType,
+                           final String type,
+                           final String username, final String title,
+                           final Double grade,
                            final int seasonNumber) {
         this.actionId = actionId;
         this.actionType = actionType;

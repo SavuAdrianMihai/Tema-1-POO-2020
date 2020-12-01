@@ -1,7 +1,6 @@
 package fileio;
 
 import actor.ActorsAwards;
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -11,6 +10,10 @@ import java.util.Map;
  * DO NOT MODIFY
  */
 public final class ActorInputData {
+    /**
+     * awards won by the actor
+     */
+    private final Map<ActorsAwards, Integer> awards;
     /**
      * actor name
      */
@@ -23,11 +26,6 @@ public final class ActorInputData {
      * videos starring actor
      */
     private ArrayList<String> filmography;
-    /**
-     * awards won by the actor
-     */
-    private final Map<ActorsAwards, Integer> awards;
-
     private double rating;
 
     public ActorInputData(final String name, final String careerDescription,
@@ -37,7 +35,7 @@ public final class ActorInputData {
         this.careerDescription = careerDescription;
         this.filmography = filmography;
         this.awards = awards;
-        this.rating = 0;
+        this.rating = 0.0;
     }
 
     public String getName() {
@@ -85,9 +83,13 @@ public final class ActorInputData {
                 + ", filmography=" + filmography + '}';
     }
 
-    public int totalNumberOfAwards(){
+    /**
+     * Method that calculates the total number of awards earned by actor object
+     */
+    public int totalNumberOfAwards() {
         int awardsCounter;
-        awardsCounter = this.getAwards().values().stream().mapToInt(Integer::intValue).sum();
+        awardsCounter =
+                this.getAwards().values().stream().mapToInt(Integer::intValue).sum();
         return awardsCounter;
     }
 }

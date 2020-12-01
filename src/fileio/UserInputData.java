@@ -1,6 +1,8 @@
 package fileio;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Information about an user, retrieved from parsing the input test files
